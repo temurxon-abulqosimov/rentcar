@@ -4,79 +4,72 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
-    container_name: rentcar-postgres
+    container_name: rentcar_postgres
     environment:
-      POSTGRES_DB: rentcar_db
+      POSTGRES_DB: rentcar
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: admin
+      POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - rentcar-network
-    restart: unless-stopped
+      - rentcar_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d rentcar"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  # Redis for caching and sessions
+  # NestJS Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: rentcar_app
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: admin
+      DB_NAME: rentcar
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - rentcar_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis (optional, for caching and sessions)
   redis:
     image: redis:7-alpine
-    container_name: rentcar-redis
+    container_name: rentcar_redis
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
-      - rentcar-network
+      - rentcar_network
     restart: unless-stopped
-
-  # pgAdmin for database management (optional)
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: rentcar-pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@rentcar.com
-      PGADMIN_DEFAULT_PASSWORD: admin123
-    ports:
-      - "5050:80"
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    networks:
-      - rentcar-network
-    depends_on:
-      - postgres
-    restart: unless-stopped
-
-  # Application (uncomment when ready to run)
-  # app:
-  #   build: .
-  #   container_name: rentcar-backend
-  #   environment:
-  #     NODE_ENV: development
-  #     DB_HOST: postgres
-  #     DB_PORT: 5432
-  #     DB_USERNAME: postgres
-  #     DB_PASSWORD: password
-  #     DB_NAME: rentcar_db
-  #     REDIS_HOST: redis
-  #     REDIS_PORT: 6379
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - .:/usr/src/app
-  #     - /usr/src/app/node_modules
-  #   networks:
-  #     - rentcar-network
-  #   depends_on:
-  #     - postgres
-  #     - redis
-  #   restart: unless-stopped
 
 volumes:
   postgres_data:
   redis_data:
-  pgadmin_data:
 
 networks:
-  rentcar-network:
+  rentcar_network:
     driver: bridge 
