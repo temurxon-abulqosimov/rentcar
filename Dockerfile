@@ -7,14 +7,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install ALL dependencies (including dev dependencies for building)
+RUN npm ci
 
 # Copy source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Build the application using local nest binary
+RUN npx nest build
 
 # Production stage
 FROM node:18-alpine AS production
