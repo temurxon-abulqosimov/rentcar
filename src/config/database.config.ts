@@ -23,7 +23,7 @@ export const getDatabaseConfig = (configService: ConfigService): TypeOrmModuleOp
     entities: [User, Car, History, Review, Ranking, Admin],
     synchronize: true, // Will be true for development
     logging: isDevelopment,
-    ssl: configService.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
+    ssl: configService.get('SSL_ENABLED', 'false') === 'true' ? { rejectUnauthorized: false } : false,
     migrations: ['dist/migrations/*.js'],
     migrationsRun: true,
     autoLoadEntities: true,
@@ -40,7 +40,7 @@ export const databaseConfig: TypeOrmModuleOptions = {
   entities: [User, Car, History, Review, Ranking, Admin],
   synchronize: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined,
   logging: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === undefined,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      ssl: process.env.SSL_ENABLED === 'true' ? { rejectUnauthorized: false } : false,
   migrations: ['dist/migrations/*.js'],
   migrationsRun: true,
   autoLoadEntities: true,
