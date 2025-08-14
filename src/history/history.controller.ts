@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, ForbiddenException, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth, ApiBody, ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { HistoryService } from './history.service';
 import { CreateHistoryDto } from './dto/create-history.dto';
@@ -27,9 +27,9 @@ export class HistoryController {
         summary: 'Weekend Rental',
         description: 'Create a weekend car rental',
         value: {
-          carId: '550e8400-e29b-41d4-a716-446655440000',
-          startDate: '2024-12-25T10:00:00Z',
-          endDate: '2024-12-27T18:00:00Z',
+          carId: '9328109d-ad19-4a43-a4f8-2b34361aeb6d',
+          startDate: '2026-12-25T10:00:00Z',
+          endDate: '2026-12-27T18:00:00Z',
           pickupLocation: '123 Main St, Downtown, City',
           dropoffLocation: '456 Business Ave, Uptown, City',
           notes: 'Please deliver the car with a full tank of gas',
@@ -43,8 +43,8 @@ export class HistoryController {
         description: 'Create a business trip car rental',
         value: {
           carId: '660e8400-e29b-41d4-a716-446655440000',
-          startDate: '2024-12-30T08:00:00Z',
-          endDate: '2025-01-02T17:00:00Z',
+          startDate: '2026-12-30T08:00:00Z',
+          endDate: '2027-01-02T17:00:00Z',
           pickupLocation: 'Airport Terminal 1, Gate A',
           dropoffLocation: 'Airport Terminal 1, Gate A',
           notes: 'Business trip - need reliable transportation',

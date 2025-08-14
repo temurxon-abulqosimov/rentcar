@@ -25,8 +25,8 @@ export class ReviewsController {
         summary: 'Positive Review',
         description: 'Create a positive review for a great experience',
         value: {
-          carId: '550e8400-e29b-41d4-a716-446655440000',
-          historyId: '660e8400-e29b-41d4-a716-446655440000',
+          carId: '9328109d-ad19-4a43-a4f8-2b34361aeb6d',
+          historyId: '25870122-f423-4703-a86f-5fe98881e344',
           rating: 5,
           title: 'Excellent car rental experience!',
           content: 'The car was in perfect condition and the rental process was smooth. Highly recommend!',

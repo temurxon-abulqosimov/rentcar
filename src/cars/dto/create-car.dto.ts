@@ -125,7 +125,7 @@ export class CreateCarDto {
     minimum: 0.5,
     maximum: 10.0,
   })
-  @IsNumber()
+  @IsNumber({ maxDecimalPlaces: 1 })
   @Min(0.5)
   @Max(10.0)
   engineSize: number;

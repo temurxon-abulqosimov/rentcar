@@ -36,7 +36,6 @@ export class UsersService {
     const user = this.userRepository.create({
       ...createUserDto,
       password: hashedPassword,
-      role: UserRole.CUSTOMER,
       status: UserStatus.ACTIVE,
     });
 

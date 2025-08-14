@@ -5,7 +5,7 @@ import { RentalStatus } from '../entities/history.entity';
 export class CreateHistoryDto {
   @ApiProperty({
     description: 'Car ID to rent',
-    example: '550e8400-e29b-41d4-a716-446655440000',
+    example: '9328109d-ad19-4a43-a4f8-2b34361aeb6d',
     format: 'uuid',
   })
   @IsUUID()
@@ -13,7 +13,7 @@ export class CreateHistoryDto {
 
   @ApiProperty({
     description: 'Start date of the rental',
-    example: '2024-12-25T10:00:00Z',
+    example: '2026-12-25T10:00:00Z',
     format: 'date-time',
   })
   @IsDateString()
@@ -21,7 +21,7 @@ export class CreateHistoryDto {
 
   @ApiProperty({
     description: 'End date of the rental',
-    example: '2024-12-27T18:00:00Z',
+    example: '2026-12-27T18:00:00Z',
     format: 'date-time',
   })
   @IsDateString()
@@ -30,23 +30,17 @@ export class CreateHistoryDto {
   @ApiProperty({
     description: 'Pickup location for the rental',
     example: '123 Main St, Downtown, City',
-    minLength: 10,
-    maxLength: 200,
+    minLength: 10
   })
   @IsString()
-  @Min(10)
-  @Max(200)
   pickupLocation: string;
 
   @ApiProperty({
     description: 'Drop-off location for the rental',
     example: '456 Business Ave, Uptown, City',
-    minLength: 10,
-    maxLength: 200,
+    minLength: 10
   })
   @IsString()
-  @Min(10)
-  @Max(200)
   dropoffLocation: string;
 
   @ApiPropertyOptional({
@@ -66,7 +60,6 @@ export class CreateHistoryDto {
   })
   @IsOptional()
   @IsString()
-  @Max(500)
   notes?: string;
 
   @ApiPropertyOptional({
@@ -81,22 +74,18 @@ export class CreateHistoryDto {
 
   @ApiPropertyOptional({
     description: 'Pickup instructions',
-    example: 'Meet at the main entrance of the building',
-    maxLength: 300,
+    example: 'Meet at the main entrance of the building'
   })
   @IsOptional()
   @IsString()
-  @Max(300)
   pickupInstructions?: string;
 
   @ApiPropertyOptional({
     description: 'Drop-off instructions',
-    example: 'Leave the car in the designated parking area',
-    maxLength: 300,
+    example: 'Leave the car in the designated parking area'
   })
   @IsOptional()
   @IsString()
-  @Max(300)
   dropoffInstructions?: string;
 
   @ApiPropertyOptional({
@@ -185,7 +174,7 @@ export class CreateHistoryDto {
 
   @ApiPropertyOptional({
     description: 'Expected return time (if different from end date)',
-    example: '2024-12-27T16:00:00Z',
+    example: '2026-12-27T16:00:00Z',
     format: 'date-time',
   })
   @IsOptional()

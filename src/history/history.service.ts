@@ -21,7 +21,7 @@ export class HistoryService {
   ) {}
 
   async createRental(createHistoryDto: any, userId: string): Promise<History> {
-    const { carId, startDate, endDate, pickupLocation, returnLocation } = createHistoryDto;
+    const { carId, startDate, endDate, pickupLocation, dropoffLocation } = createHistoryDto;
 
     // Validate dates
     const start = new Date(startDate);
@@ -77,7 +77,7 @@ export class HistoryService {
       dailyRate: car.dailyRate,
       deposit: car.deposit,
       pickupLocation,
-      returnLocation,
+      returnLocation: dropoffLocation,
       status: RentalStatus.PENDING,
       paymentStatus: PaymentStatus.PENDING,
     });
@@ -305,5 +305,71 @@ export class HistoryService {
       .getRawOne();
 
     return stats;
+  }
+
+  // Car availability and rental validation methods
+  async checkCarAvailability(carId: string, startDate: Date, endDate: Date): Promise<boolean> {
+    const conflictingRental = await this.historyRepository.findOne({
+      where: {
+        carId,
+        status: In([RentalStatus.PENDING, RentalStatus.ACTIVE]),
+        startDate: Between(startDate, endDate),
+      },
+    });
+
+    return !conflictingRental;
+  }
+
+  async getAvailableCars(startDate: Date, endDate: Date, location?: string): Promise<Car[]> {
+    const queryBuilder = this.carRepository
+      .createQueryBuilder('car')
+      .where('car.status = :status', { status: CarStatus.AVAILABLE });
+
+    if (location) {
+      queryBuilder.andWhere('car.location ILIKE :location', { location: `%${location}%` });
+    }
+
+    const cars = await queryBuilder.getMany();
+    const availableCars: Car[] = [];
+
+    for (const car of cars) {
+      const isAvailable = await this.checkCarAvailability(car.id, startDate, endDate);
+      if (isAvailable) {
+        availableCars.push(car);
+      }
+    }
+
+    return availableCars;
+  }
+
+  async calculateRentalCost(carId: string, startDate: Date, endDate: Date): Promise<{
+    dailyRate: number;
+    duration: number;
+    totalCost: number;
+    deposit: number;
+  }> {
+    const car = await this.carRepository.findOne({ where: { id: carId } });
+    if (!car) {
+      throw new NotFoundException('Car not found');
+    }
+
+    const duration = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    
+    // Apply discounts for longer rentals
+    let dailyRate = car.dailyRate;
+    if (duration >= 7 && car.weeklyRate) {
+      dailyRate = car.weeklyRate / 7;
+    } else if (duration >= 30 && car.monthlyRate) {
+      dailyRate = car.monthlyRate / 30;
+    }
+
+    const totalCost = dailyRate * duration;
+
+    return {
+      dailyRate,
+      duration,
+      totalCost,
+      deposit: car.deposit
+    };
   }
 }

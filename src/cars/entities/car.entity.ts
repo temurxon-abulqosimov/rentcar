@@ -63,7 +63,7 @@ export class Car {
   @Column({ type: 'enum', enum: TransmissionType })
   transmission: TransmissionType;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'decimal', precision: 3, scale: 1 })
   engineSize: number;
 
   @Column({ type: 'int' })
@@ -84,10 +84,10 @@ export class Car {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   dailyRate: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 , nullable: true})
   weeklyRate: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 , nullable: true})
   monthlyRate: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
