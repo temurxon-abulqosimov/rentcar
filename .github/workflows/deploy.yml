@@ -1,0 +1,92 @@
+name: 🚀 Deploy to Production
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # Manual trigger
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # Test and Build Job
+  test-and-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 📦 Install dependencies
+      run: npm ci
+      
+    - name: 🧪 Run tests
+      run: npm test
+      
+    - name: 🔨 Build application
+      run: npm run build
+      
+    - name: 📋 Build info
+      run: |
+        echo "Build completed successfully!"
+        echo "Node version: $(node --version)"
+        echo "NPM version: $(npm --version)"
+        echo "Build timestamp: $(date)"
+
+  # Deploy to Production
+  deploy:
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🚀 Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        script: |
+          echo "🚀 Starting deployment..."
+          
+          # Navigate to project directory
+          cd ~/rentcar
+          
+          # Pull latest changes
+          git pull origin main
+          
+          # Stop existing containers
+          docker-compose down
+          
+          # Remove old images
+          docker system prune -f
+          
+          # Rebuild and start
+          docker-compose up -d --build
+          
+          # Wait for services to be healthy
+          sleep 30
+          
+          # Check health
+          curl -f http://localhost:3000/health || exit 1
+          
+          echo "✅ Deployment completed successfully!"
+          
+    - name: 📊 Deployment status
+      run: |
+        echo "🎉 Deployment to production completed!"
+        echo "🌐 Application: http://${{ secrets.SERVER_HOST }}:3000"
+        echo "📚 API Docs: http://${{ secrets.SERVER_HOST }}:3000/api-docs"
+        echo "🏥 Health: http://${{ secrets.SERVER_HOST }}:3000/health" 

@@ -1,0 +1,68 @@
+name: 🧪 Deploy to Staging
+
+on:
+  push:
+    branches: [ develop, staging, feature/* ]
+  pull_request:
+    branches: [ develop, staging ]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 📦 Install dependencies
+      run: npm ci
+      
+    - name: 🧪 Run tests
+      run: npm test
+      
+    - name: 🔨 Build application
+      run: npm run build
+      
+    - name: 📋 Build info
+      run: |
+        echo "✅ Staging build completed successfully!"
+        echo "Branch: ${{ github.ref_name }}"
+        echo "Commit: ${{ github.sha }}
+
+  # Optional: Deploy to staging server
+  deploy-staging:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🚀 Deploy to staging
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.STAGING_HOST }}
+        username: ${{ secrets.STAGING_USERNAME }}
+        key: ${{ secrets.STAGING_SSH_KEY }}
+        port: ${{ secrets.STAGING_PORT }}
+        script: |
+          echo "🧪 Deploying to staging..."
+          
+          cd ~/rentcar-staging
+          git pull origin ${{ github.ref_name }}
+          docker-compose down
+          docker system prune -f
+          docker-compose up -d --build
+          
+          echo "✅ Staging deployment completed!" 
