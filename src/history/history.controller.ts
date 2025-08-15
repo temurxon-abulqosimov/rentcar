@@ -3,8 +3,8 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth, ApiBody, A
 import { HistoryService } from './history.service';
 import { CreateHistoryDto } from './dto/create-history.dto';
 import { UpdateHistoryDto } from './dto/update-history.dto';
-import { AdminOrUserGuard } from 'src/guard/userOrAdmin.guard';
-import { UserRole } from 'src/users/entities/user.entity';
+import { AdminOrUserGuard } from '../guard/userOrAdmin.guard';
+import { UserRole } from '../users/entities/user.entity';
 import { RentalStatus } from './entities/history.entity';
 
 @ApiTags('Rentals')

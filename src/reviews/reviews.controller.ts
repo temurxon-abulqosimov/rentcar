@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth, ApiBody, A
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { AdminOrUserGuard } from 'src/guard/userOrAdmin.guard';
+import { AdminOrUserGuard } from '../guard/userOrAdmin.guard';
 
 @ApiTags('Reviews')
 @ApiBearerAuth('JWT-auth')

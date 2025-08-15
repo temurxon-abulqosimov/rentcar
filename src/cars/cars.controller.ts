@@ -3,8 +3,8 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth, ApiBody, A
 import { CarsService } from './cars.service';
 import { CreateCarDto } from './dto/create-car.dto';
 import { UpdateCarDto } from './dto/update-car.dto';
-import { OwnerAuthGuard } from 'src/guard/owner.guard';
-import { AdminOrUserGuard } from 'src/guard/userOrAdmin.guard';
+import { OwnerAuthGuard } from '../guard/owner.guard';
+import { AdminOrUserGuard } from '../guard/userOrAdmin.guard';
 import { FuelType, TransmissionType, CarType, CarStatus } from './entities/car.entity';
 
 @ApiTags('Cars')

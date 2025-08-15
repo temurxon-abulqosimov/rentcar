@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth, ApiBody, A
 import { RankingService } from './ranking.service';
 import { CreateRankingDto } from './dto/create-ranking.dto';
 import { UpdateRankingDto } from './dto/update-ranking.dto';
-import { AdminOrUserGuard } from 'src/guard/userOrAdmin.guard';
+import { AdminOrUserGuard } from '../guard/userOrAdmin.guard';
 
 @ApiTags('Rankings')
 @ApiBearerAuth('JWT-auth')

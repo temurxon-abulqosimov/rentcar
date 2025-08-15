@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth, ApiBody, A
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AdminOrUserGuard } from 'src/guard/userOrAdmin.guard';
+import { AdminOrUserGuard } from '../guard/userOrAdmin.guard';
 import { UserRole } from './entities/user.entity';
 
 @ApiTags('Users')

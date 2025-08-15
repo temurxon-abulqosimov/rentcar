@@ -3,9 +3,9 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth, ApiBody, A
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
-import { AdminAuthGuard } from 'src/guard/admin.guard';
+import { AdminAuthGuard } from '../guard/admin.guard';
 import { AdminRole, AdminStatus, AdminPermission } from './entities/admin.entity';
-import { SuperAdminAuthGuard } from 'src/guard/superadmin.guard';
+import { SuperAdminAuthGuard } from '../guard/superadmin.guard';
 
 @ApiTags('Admin')
 @ApiBearerAuth('JWT-auth')
